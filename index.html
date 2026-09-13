@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Counterpoint POS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">CP</div><div><strong>Counterpoint</strong><span>Point of sale</span></div></div>
+      <div class="location"><span class="status-dot"></span><span>Downtown store</span><span class="divider"></span><span>Register 04</span></div>
+      <div class="top-actions"><button class="icon-button" aria-label="Notifications"><i data-lucide="bell"></i><b class="notification-dot"></b></button><button class="cashier" id="cashierButton" aria-label="Change cashier"><div class="avatar" id="cashierAvatar">AM</div><div><strong id="cashierName">Alex Morgan</strong><span>Cashier</span></div><i data-lucide="chevron-down"></i></button></div>
+    </header>
+
+    <main class="workspace">
+      <section class="catalog-panel">
+        <div class="catalog-heading"><div><p class="eyebrow">Tuesday, September 13, 2026</p><h1>Good afternoon, Alex</h1></div><button class="outline-button" id="newSaleBtn"><i data-lucide="plus"></i> New sale</button></div>
+        <div class="search-row"><label class="search-box"><i data-lucide="search"></i><input id="searchInput" placeholder="Search products or scan barcode" /><kbd>⌘ K</kbd></label><button class="scanner-button" id="scanButton"><i data-lucide="scan-line"></i> Scan</button><button class="filter-button active" data-category="All">All items</button><button class="filter-button" data-category="Drinks">Drinks</button><button class="filter-button" data-category="Food">Food</button><button class="filter-button" data-category="Retail">Retail</button></div>
+        <div class="catalog-meta"><span><strong id="productCount">12</strong> products</span><div class="catalog-actions"><button class="add-product-button" id="addProductButton"><i data-lucide="package-plus"></i> Add product</button><button class="sort-button">Popular first <i data-lucide="chevrons-up-down"></i></button></div></div>
+        <div class="product-grid" id="productGrid"></div>
+      </section>
+
+      <aside class="checkout-panel">
+        <div class="checkout-header"><div><p class="eyebrow">Current order</p><h2 id="orderNumber">Order #1048</h2></div><button class="icon-button muted" id="clearOrderBtn" aria-label="Clear order"><i data-lucide="trash-2"></i></button></div>
+        <div class="customer-strip"><div class="customer-icon"><i data-lucide="user-round"></i></div><div><strong>Walk-in customer</strong><span>Tap to add customer</span></div><i data-lucide="chevron-right"></i></div>
+        <div class="order-items" id="orderItems"></div>
+        <div class="discount-row"><span><i data-lucide="tag"></i> Add discount</span><button id="discountBtn">10%</button></div>
+        <div class="summary"><div><span>Subtotal <small id="itemSummary">0 items</small></span><strong id="subtotal">$0.00</strong></div><div><span>Discount</span><strong class="discount-value" id="discountValue">-$0.00</strong></div><div><span>Tax <small>8.25%</small></span><strong id="taxValue">$0.00</strong></div><div class="total-row"><span>Total</span><strong id="totalValue">$0.00</strong></div></div>
+        <div class="payment-label"><span>Payment method</span><span class="secure"><i data-lucide="lock-keyhole"></i> Secure</span></div>
+        <div class="payment-methods"><button class="payment-button active" data-method="Cash"><i data-lucide="banknote"></i><span>Cash</span></button><button class="payment-button" data-method="Card"><i data-lucide="credit-card"></i><span>Card</span></button><button class="payment-button" data-method="Other"><i data-lucide="wallet-cards"></i><span>Other</span></button></div>
+        <button class="pay-button" id="payButton" disabled><span>Charge <strong id="payAmount">$0.00</strong></span><i data-lucide="arrow-up-right"></i></button>
+      </aside>
+    </main>
+
+    <div class="terminal-bar"><div class="terminal-title"><span class="terminal-pulse"></span><span>Cashier terminal</span><strong>Ready</strong></div><div class="terminal-stats"><span><i data-lucide="receipt-text"></i><b id="terminalItems">0</b> items</span><span><i data-lucide="percent"></i><b id="terminalDiscount">$0.00</b> discount</span><span><i data-lucide="clock-3"></i>Last sale 2 min ago</span></div><div class="terminal-actions"><button class="text-button" id="undoBtn" disabled><i data-lucide="undo-2"></i> Undo change</button><button class="finalize-button" id="finalizeBtn" disabled><i data-lucide="check"></i> Finalize sale</button></div></div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <div class="receipt-modal" id="receiptModal" aria-hidden="true">
+    <div class="receipt-backdrop" data-close-receipt></div>
+    <section class="receipt-card" role="dialog" aria-modal="true" aria-labelledby="receiptTitle">
+      <button class="receipt-close" data-close-receipt aria-label="Close receipt"><i data-lucide="x"></i></button>
+      <div class="receipt-brand"><div class="brand-mark">CP</div><div><strong>Counterpoint</strong><span>Downtown store</span></div></div>
+      <div class="receipt-heading"><p class="eyebrow">Payment complete</p><h2 id="receiptTitle">Official receipt</h2><span id="receiptNumber">Order #1048</span></div>
+      <div class="receipt-meta"><div><span>Date</span><strong id="receiptDate"></strong></div><div><span>Time</span><strong id="receiptTime"></strong></div><div><span>Cashier</span><strong id="receiptCashier">Alex Morgan</strong></div><div><span>Payment</span><strong id="receiptPayment">Cash</strong></div></div>
+      <div class="receipt-lines" id="receiptLines"></div>
+      <div class="receipt-totals"><div><span>Subtotal</span><strong id="receiptSubtotal"></strong></div><div><span>Discount</span><strong class="discount-value" id="receiptDiscount"></strong></div><div><span>Tax <small>8.25%</small></span><strong id="receiptTax"></strong></div><div class="receipt-grand-total"><span>Total paid</span><strong id="receiptTotal"></strong></div></div>
+      <p class="receipt-thanks">Thank you for shopping with us.</p>
+      <div class="receipt-actions"><button class="outline-button" id="printReceipt"><i data-lucide="printer"></i> Print</button><button class="outline-button" data-close-receipt>Close</button><button class="finalize-button" id="newReceiptSale"><i data-lucide="plus"></i> New sale</button></div>
+    </section>
+  </div>
+  <div class="simple-modal" id="cashierModal" aria-hidden="true">
+    <div class="simple-backdrop" data-close-cashier></div>
+    <section class="simple-card" role="dialog" aria-labelledby="cashierTitle"><button class="simple-close" data-close-cashier aria-label="Close"><i data-lucide="x"></i></button><p class="eyebrow">Register access</p><h2 id="cashierTitle">Change cashier</h2><p class="modal-copy">Select the team member operating this register.</p><div class="cashier-options" id="cashierOptions"></div></section>
+  </div>
+  <div class="simple-modal" id="productModal" aria-hidden="true">
+    <div class="simple-backdrop" data-close-product></div>
+    <section class="simple-card" role="dialog" aria-labelledby="productTitle"><button class="simple-close" data-close-product aria-label="Close"><i data-lucide="x"></i></button><p class="eyebrow">Catalog management</p><h2 id="productTitle">Add new product</h2><form class="product-form" id="productForm"><label>Product name<input id="productName" required placeholder="e.g. Vanilla Latte" /></label><div class="form-grid"><label>Category<select id="productCategory"><option>Drinks</option><option>Food</option><option>Retail</option></select></label><label>Price (PHP)<input id="productPrice" required type="number" min="0" step="0.01" placeholder="0.00" /></label></div><div class="form-grid"><label>Barcode<input id="productBarcode" placeholder="Scan or type code" /></label><label>Icon emoji<input id="productEmoji" maxlength="2" value="🛍️" /></label></div><button class="finalize-button form-submit" type="submit"><i data-lucide="plus"></i> Add to catalog</button></form></section>
+  </div>
+  <div class="simple-modal" id="cardModal" aria-hidden="true">
+    <div class="simple-backdrop" data-close-card></div>
+    <section class="simple-card card-terminal" role="dialog" aria-labelledby="cardTitle"><div class="terminal-symbol"><i data-lucide="credit-card"></i></div><p class="eyebrow">Secure card terminal</p><h2 id="cardTitle">Present card to terminal</h2><p class="modal-copy">Tap, insert, or swipe the customer card. This demo does not send card data anywhere.</p><div class="card-amount" id="cardAmount">₱0.00</div><label class="last-four">Last 4 digits (optional)<input id="lastFour" inputmode="numeric" maxlength="4" placeholder="1234" /></label><button class="finalize-button form-submit" id="approveCard"><i data-lucide="check"></i> Approve card payment</button><button class="text-button modal-cancel" data-close-card>Cancel</button></section>
+  </div>
+  <style>
+    .receipt-modal,.simple-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.receipt-modal.open,.simple-modal.open{display:flex}.receipt-backdrop,.simple-backdrop{position:absolute;inset:0;background:rgba(24,35,33,.42);backdrop-filter:blur(4px)}.receipt-card,.simple-card{position:relative;width:min(410px,100%);max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:14px;padding:28px 30px;box-shadow:0 24px 70px rgba(24,35,33,.22);animation:receipt-in .22s ease-out}.receipt-close,.simple-close{position:absolute;right:17px;top:17px;background:#f3f6f3;border-radius:7px;width:29px;height:29px;display:grid;place-items:center;color:#8b9994}.receipt-close svg,.simple-close svg{width:15px}.receipt-brand{display:flex;align-items:center;gap:9px;border-bottom:1px dashed #dfe6e1;padding-bottom:19px}.receipt-brand .brand-mark{height:30px;width:30px;font-size:10px}.receipt-brand strong{display:block;font:700 13px 'Space Grotesk'}.receipt-brand span{display:block;color:#98a49f;font-size:10px;margin-top:2px}.receipt-heading{text-align:center;padding:20px 0 16px}.receipt-heading .eyebrow{margin-bottom:6px;color:var(--mint-dark)}.receipt-heading h2,.simple-card h2{font:600 23px 'Space Grotesk';margin:0 0 5px}.receipt-heading>span{font-size:10px;color:#9aa5a2}.receipt-meta{display:grid;grid-template-columns:1fr 1fr;gap:13px;background:#f6f9f6;border-radius:9px;padding:13px 15px;margin-bottom:15px}.receipt-meta span,.receipt-meta strong{display:block}.receipt-meta span{font-size:9px;color:#98a49f;margin-bottom:4px}.receipt-meta strong{font-size:11px;color:#465650}.receipt-lines{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:5px 0}.receipt-line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:11px}.receipt-line span:first-child{color:#5c6a65}.receipt-line small{color:#9aa5a2;margin-left:5px}.receipt-totals{padding-top:12px}.receipt-totals>div{display:flex;justify-content:space-between;color:#87938f;font-size:11px;margin-bottom:8px}.receipt-totals strong{color:#52615c}.receipt-totals .discount-value{color:#c78645}.receipt-grand-total{border-top:1px solid var(--line);padding-top:14px;margin-top:12px;align-items:end;font-weight:700}.receipt-grand-total span{font:600 13px 'Space Grotesk';color:var(--ink)}.receipt-grand-total strong{font:700 23px 'Space Grotesk';color:var(--ink)}.receipt-thanks{text-align:center;color:#9aa5a2;font-size:10px;margin:18px 0}.receipt-actions{display:flex;justify-content:flex-end;gap:8px}.receipt-actions .outline-button{padding:10px 14px}.receipt-actions .finalize-button{padding:10px 14px}.simple-card{width:min(430px,100%)}.modal-copy{color:#82908a;font-size:12px;line-height:1.6;margin:0 0 18px}.cashier-options{display:grid;gap:8px}.cashier-option{display:flex;align-items:center;gap:11px;background:#f7f9f7;border:1px solid var(--line);padding:11px;border-radius:8px;text-align:left}.cashier-option.active{border-color:#9cddb4;background:#f0faf3}.cashier-option .avatar{flex:none}.cashier-option strong{display:block;font-size:12px}.cashier-option span{display:block;color:#98a49f;font-size:10px;margin-top:3px}.product-form{display:grid;gap:13px;margin-top:18px}.product-form label,.last-four{display:grid;gap:6px;color:#778680;font-size:10px;font-weight:700}.product-form input,.product-form select,.last-four input{width:100%;height:39px;border:1px solid var(--line);border-radius:7px;padding:0 10px;outline:0;font-size:12px;background:#fff;color:var(--ink)}.product-form input:focus,.product-form select:focus,.last-four input:focus{border-color:#8dcda6}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form-submit{justify-content:center;width:100%;border:0;margin-top:4px}.terminal-symbol{height:43px;width:43px;border-radius:11px;display:grid;place-items:center;background:#e2f5e8;color:var(--mint-dark);margin-bottom:18px}.terminal-symbol svg{width:21px}.card-amount{text-align:center;font:700 29px 'Space Grotesk';color:var(--ink);margin:20px 0}.modal-cancel{width:100%;justify-content:center;margin-top:10px}.catalog-actions{display:flex;align-items:center;gap:10px}.add-product-button,.scanner-button{background:#edf8f0;color:var(--mint-dark);border:1px solid #ccebd7;border-radius:8px;padding:8px 10px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:6px}.add-product-button svg,.scanner-button svg{width:14px}.scanner-button{height:37px;background:#fff;color:#73817c;border-color:var(--line)}.cashier{background:transparent;border:0;padding:0}@keyframes receipt-in{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}@media print{body *{visibility:hidden!important}#receiptModal,#receiptModal *{visibility:visible!important}#receiptModal{display:flex;position:absolute;background:#fff;padding:0}#receiptModal .receipt-backdrop,#receiptModal .receipt-close,#receiptModal .receipt-actions{display:none}.receipt-card{box-shadow:none;width:100%;max-height:none}}
+  </style>
+  <script src="app.js"></script>
+</body>
+</html>
